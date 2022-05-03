@@ -34,6 +34,7 @@ broad_sample = set(df_profile['Metadata_broad_sample'].unique())
 intersect = broad_id.intersection(broad_sample)
 
 broad2smiles = dict(zip(df_annotation['BROAD_ID'], df_annotation['CPD_SMILES']))
+
 '''
 with open(save_file, 'w') as outfile1:
     json.dump(broad2smiles, outfile1)

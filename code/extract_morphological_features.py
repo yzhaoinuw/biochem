@@ -30,6 +30,7 @@ for k, file in enumerate(folder):
     df = pd.read_csv(PROFILE_PATH+file)
     broad_id = df['Metadata_broad_sample'].to_numpy()
     df = df.iloc[:, 17:]
+
     features.append(df.to_numpy())
     for broad in broad_id:
         
@@ -41,7 +42,12 @@ features = np.vstack(features)
     
 #%%
 '''
-save_file = '../data/featues.npy'
+feature_name_file = '../data/feature_names.json'
+columns = df.columns.to_list()
+with open(feature_name_file, 'w') as outfile0:
+    json.dump(columns, outfile0)
+
+save_file = '../data/features.npy'
 with open(save_file, 'wb') as outfile1:
     np.save(outfile1, features)
     
