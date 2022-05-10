@@ -33,8 +33,8 @@ feature_names = np.array(feature_names)
 features = np.load(DATA_PATH+features_file)
 
 #%%
-rows = broad2features['BRD-A00100033-001-04-8']
-features[rows]
+#rows = broad2features['BRD-A00100033-001-04-8']
+#features[rows]
 
 sample_count = {broad: len(row_inds) for broad, row_inds in broad2features.items()}
 sorted_count = sorted(sample_count.items(), key=lambda kv:- kv[1])
@@ -45,8 +45,8 @@ N = 200
 pca = PCA(n_components=N)
 model = pca.fit(features_standardized)
 
-main_components = np.transpose((model.explained_variance_ratio_>0.1).nonzero())
+main_components = (model.explained_variance_ratio_>0.1).nonzero()[0]
 main_components = np.absolute(model.components_[main_components])
-main_features = np.unique(np.transpose((main_components > 0.1).nonzero())[:, 1])
-main_features = feature_names[main_features]
+main_feature_inds = np.unique(np.transpose((main_components>0.1).nonzero())[:, -1])
+main_features = feature_names[main_feature_inds]
 print (main_features)
