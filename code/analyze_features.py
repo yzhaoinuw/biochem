@@ -41,7 +41,8 @@ sorted_count = sorted(sample_count.items(), key=lambda kv:- kv[1])
 
 features_standardized = stats.zscore(features, axis=1, ddof=1)
 #%%
-N = 200
+
+N = 50
 pca = PCA(n_components=N)
 model = pca.fit(features_standardized)
 
