@@ -27,6 +27,7 @@ with open(DATA_PATH+broad2smiles_file, 'r') as infile1:
 features = np.load(DATA_PATH+features_file)
 
 #%%
+
 X = []
 Y = []
 
@@ -46,6 +47,7 @@ for broad_id, fingerprint in broad2fingerprint.items():
 X = np.array(X)
 Y = np.array(Y)
 
+#%%
 feature_ind = 2
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.33)
 regr = MLPRegressor(random_state=1,
