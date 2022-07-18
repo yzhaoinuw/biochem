@@ -6,12 +6,15 @@ Created on Tue May 17 08:47:26 2022
 """
 
 import json
+import pickle
 import numpy as np
 
+from sklearn.metrics import mean_squared_error
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 
 DATA_PATH = '../data/'
+MODEL_PATH = '../model/'
 
 broad2features_file = 'broad2features.json'
 broad2smiles_file = 'broad2fingerprints.json'
@@ -48,6 +51,7 @@ X = np.array(X)
 Y = np.array(Y)
 
 #%%
+'''
 feature_ind = 2
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.33)
 regr = MLPRegressor(random_state=1,
@@ -57,5 +61,14 @@ regr = MLPRegressor(random_state=1,
                     verbose=True,
                     ).fit(X_train, Y_train[:, feature_ind]) # Cells_AreaShape_Area
 
-print (f"R squared: {regr.score(X_test, Y_test[:,feature_ind])}")
+#print (f"R squared: {regr.score(X_test, Y_test[:,feature_ind])}")
 #%%
+Y_pred = regr.predict(X_test)
+mse = mean_squared_error(Y_test[:, feature_ind], Y_pred, squared=False)
+#%%
+
+model_name = 'MLPRegressor_model'
+# save
+with open(MODEL_PATH+f'{model_name}.pkl','wb') as outfile:
+    pickle.dump(regr, outfile)
+'''
