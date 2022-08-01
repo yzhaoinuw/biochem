@@ -23,32 +23,38 @@ DATA_PATH = '../data/'
 WRITE_LOC = '../data/'
 MODEL_PATH = '../model/'
 
-broad2vec_file = 'broad2vec.json'
+broad2smiles_file = 'broad2smiles.json'
+embeddings_file = 'biochem_smiles.npz'
 broad2features_file = 'broad2features.json'
 features_file = 'features.npy'
 
 with open(DATA_PATH+broad2features_file, 'r') as infile1:
     broad2features = json.load(infile1)
     
-with open(DATA_PATH+broad2vec_file, 'r') as infile1:
-    broad2vec = json.load(infile1)
+with open(DATA_PATH+broad2smiles_file, 'r') as infile1:
+    broad2smiles = json.load(infile1)
 
+embeddings = np.load(MODEL_PATH+embeddings_file)
 features = np.load(DATA_PATH+features_file)
 
 #%%
+
 X = []
 y = []
 
-for broad_id, mol_vec in broad2vec.items():
+for broad_id, smiles in broad2smiles.items():
     # turn mol_vec (saved in json as list) into a numpy array
-    mol_vec = np.array(mol_vec)
+    embedding = embeddings.get(smiles, None)
+    if embedding is None:
+        continue
+    embedding = np.mean(embedding, axis=0)
     row_indices = broad2features[broad_id]
     for row_ind in row_indices:
         #cell_area = features[row_ind, 0]
         #cytoplasm_area = features[row_ind, 596]
         nuclei_area = features[row_ind, 1178]
         y.append(nuclei_area)
-        X.append(mol_vec)
+        X.append(embedding)
         
 #%%
 X = np.array(X)
@@ -61,7 +67,7 @@ y_train = torch.from_numpy(y_train).float()
 y_test = torch.from_numpy(y_test).float()
 
 #%%
-
+'''
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu")
 EARLY_STOPPING = 5
@@ -69,11 +75,11 @@ EPOCHS = 5
 
 train_set = Dataset(X_train, y_train)
 test_set = Dataset(X_test, y_test)
-train_loader = torch.utils.data.DataLoader(train_set, batch_size=64, shuffle=True)
-test_loader = torch.utils.data.DataLoader(test_set, batch_size=64, shuffle=True)
+train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
+test_loader = DataLoader(test_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
-mlp = MLP(input_size=300, hidden_layer=1024)
+mlp = MLP(input_size=512, hidden_layer=1024)
 
 # Define the loss function and optimizer
 loss_function = nn.L1Loss()
@@ -148,3 +154,4 @@ plt.xlabel("iterations")
 plt.ylabel("Loss")
 plt.legend()
 plt.show() 
+'''

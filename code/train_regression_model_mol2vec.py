@@ -1,36 +1,37 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue May 17 08:47:26 2022
+Created on Mon Jul 18 23:58:22 2022
 
 @author: Yue
 """
 
 import json
-import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+
+#from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.model_selection import train_test_split
 
 import torch
 from torch import nn
 from torch.utils.data import DataLoader
-from sklearn.model_selection import train_test_split
 
 from dataset import Dataset
 from neural_networks import MLP
 
 DATA_PATH = '../data/'
+WRITE_LOC = '../data/'
 MODEL_PATH = '../model/'
 
+broad2vec_file = 'broad2vec.json'
 broad2features_file = 'broad2features.json'
-broad2fingerprints_file = 'broad2fingerprints.json'
 features_file = 'features.npy'
-
 
 with open(DATA_PATH+broad2features_file, 'r') as infile1:
     broad2features = json.load(infile1)
     
-with open(DATA_PATH+broad2fingerprints_file, 'r') as infile1:
-    broad2fingerprint = json.load(infile1)
+with open(DATA_PATH+broad2vec_file, 'r') as infile1:
+    broad2vec = json.load(infile1)
 
 features = np.load(DATA_PATH+features_file)
 
@@ -38,17 +39,16 @@ features = np.load(DATA_PATH+features_file)
 X = []
 y = []
 
-for broad_id, fingerprint in broad2fingerprint.items():
-    # turn fingerprint (bit string) into a numpy array
-    if fingerprint is None:
-        continue
+for broad_id, mol_vec in broad2vec.items():
+    # turn mol_vec (saved in json as list) into a numpy array
+    mol_vec = np.array(mol_vec)
     row_indices = broad2features[broad_id]
     for row_ind in row_indices:
         #cell_area = features[row_ind, 0]
         #cytoplasm_area = features[row_ind, 596]
         nuclei_area = features[row_ind, 1178]
         y.append(nuclei_area)
-        X.append(np.array(list(fingerprint)).astype(float))
+        X.append(mol_vec)
         
 #%%
 X = np.array(X)
@@ -64,8 +64,8 @@ y_test = torch.from_numpy(y_test).float()
 
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu")
-EARLY_STOPPING = 10
-EPOCHS = 20
+EARLY_STOPPING = 5
+EPOCHS = 5
 
 train_set = Dataset(X_train, y_train)
 test_set = Dataset(X_test, y_test)
@@ -73,7 +73,7 @@ train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
-mlp = MLP(input_size=2048, hidden_layer=512).to(device)
+mlp = MLP(input_size=300, hidden_layer=1024)
 
 # Define the loss function and optimizer
 loss_function = nn.L1Loss()
@@ -129,7 +129,6 @@ for epoch in range(EPOCHS):
     with torch.no_grad():
         for data in test_loader:
             mol_vec, labels = data
-            mol_vec, labels = mol_vec.to(device), labels.to(device)
             labels = labels.reshape((labels.shape[0], 1))
             y_pred = mlp(mol_vec)
             batch_loss = loss_function(y_pred, labels)
