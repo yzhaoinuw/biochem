@@ -40,8 +40,16 @@ features = np.load(DATA_PATH + features_file)
 
 #%%
 
-X = []
-y = []
+LEAST_SAMPLE_COUNT = 8
+TEST_SIZE = 0.5
+EARLY_STOPPING = 10
+EPOCHS = 30
+SAVE_MODEL = True
+
+X_train = []
+X_test = []
+y_train = []
+y_test = []
 
 for broad_id, smiles in broad2smiles.items():
     # turn embeddings (saved in json as list) into a numpy array
@@ -50,17 +58,29 @@ for broad_id, smiles in broad2smiles.items():
         continue
     embedding = np.mean(embedding, axis=0)
     row_indices = broad2features[broad_id]
-    for row_ind in row_indices:
+    
+    l = min(len(row_indices), LEAST_SAMPLE_COUNT)
+    np.random.shuffle(row_indices)
+    row_indices = row_indices[:l]
+    test_inds, train_inds= row_indices[:int(l*TEST_SIZE)], row_indices[int(l*TEST_SIZE):]
+    
+    for ind in train_inds:
         # cell_area = features[row_ind, 0]
         # cytoplasm_area = features[row_ind, 596]
-        nuclei_area = features[row_ind, 1178]
-        y.append(nuclei_area)
-        X.append(embedding)
+        nuclei_area = features[ind, 1178]
+        y_train.append(nuclei_area)
+        X_train.append(embedding)
+    for ind in test_inds:
+        # cell_area = features[row_ind, 0]
+        # cytoplasm_area = features[row_ind, 596]
+        nuclei_area = features[ind, 1178]
+        y_test.append(nuclei_area)
+        X_test.append(embedding)    
+    
 
 #%%
-X = np.array(X)
-y = np.array(y)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4)
+X_train, X_test = np.array(X_train), np.array(X_test)
+y_train, y_test = np.array(y_train), np.array(y_test)
 
 X_train = torch.from_numpy(X_train).float()
 X_test = torch.from_numpy(X_test).float()
@@ -71,9 +91,6 @@ y_test = torch.from_numpy(y_test).float()
 
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu")
-EARLY_STOPPING = 5
-EPOCHS = 20
-SAVE_MODEL = False
 
 train_set = Dataset(X_train, y_train)
 test_set = Dataset(X_test, y_test)
@@ -81,11 +98,11 @@ train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
-model_name = f"MLPRegressor_mol_emb_epoch{EPOCHS}_RMSELoss"
+model_name = f"MLPRegressor_mol_emb_epoch{EPOCHS}"
 mlp = MLP(input_size=512, hidden_layer=1024).to(device)
 
 # Define the loss function and optimizer
-loss_function = nn.MSELoss()
+loss_function = nn.L1Loss()
 optimizer = torch.optim.Adam(mlp.parameters(), lr=1e-4)
 prev_loss = 0.0
 stale = 0.0
@@ -98,11 +115,11 @@ for epoch in range(EPOCHS):
     test_loss = 0.0
     with torch.no_grad():
         for data in test_loader:
-            mol_vec, labels = data
-            mol_vec, labels = mol_vec.to(device), labels.to(device)
+            mol_emb, labels = data
+            mol_emb, labels = mol_emb.to(device), labels.to(device)
             labels = labels.reshape((labels.shape[0], 1))
-            y_pred = mlp(mol_vec)
-            batch_loss = torch.sqrt(loss_function(y_pred, labels))
+            y_pred = mlp(mol_emb)
+            batch_loss = loss_function(y_pred, labels)
             test_loss += batch_loss.item() * len(data[0])
 
         test_loss /= len(test_set)
@@ -122,7 +139,7 @@ for epoch in range(EPOCHS):
         outputs = mlp(inputs)
 
         # Compute loss
-        loss = torch.sqrt(loss_function(outputs, targets))
+        loss = loss_function(outputs, targets)
 
         # Perform backward pass
         loss.backward()
@@ -139,7 +156,7 @@ for epoch in range(EPOCHS):
     print(f"test loss: {test_loss}")
     print("")
 
-    with open(WRITE_LOC + model_name + ".txt", "a") as infile1:
+    with open(WRITE_LOC + model_name + ".txt", "w") as infile1:
         epoch_message = [
             f"Epoch {epoch}",
             f"Training Loss: {train_loss:.3f}",
@@ -147,9 +164,9 @@ for epoch in range(EPOCHS):
         ]
         infile1.write("\n".join(epoch_message)+"\n"*2)
 
-    if train_loss >= 0.99 * prev_loss:
+    if test_loss >= 0.99 * prev_loss:
         stale += 1
-        prev_loss = np.mean(train_losses[-EARLY_STOPPING:])
+        prev_loss = np.mean(test_losses[-EARLY_STOPPING:])
     else:
         stale = 0
 

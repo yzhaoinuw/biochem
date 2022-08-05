@@ -20,7 +20,7 @@ from dataset import Dataset
 from neural_networks import MLP
 
 DATA_PATH = "../data/"
-WRITE_LOC = "../data/"
+WRITE_LOC = "../results/"
 MODEL_PATH = "../model/"
 
 broad2vec_file = "broad2vec.json"
@@ -65,7 +65,8 @@ y_test = torch.from_numpy(y_test).float()
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu")
 EARLY_STOPPING = 5
-EPOCHS = 5
+EPOCHS = 20
+SAVE_MODEL = False
 
 train_set = Dataset(X_train, y_train)
 test_set = Dataset(X_test, y_test)
@@ -73,7 +74,8 @@ train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
-mlp = MLP(input_size=300, hidden_layer=1024)
+model_name = f"MLPRegressor_mol_vec_epoch{EPOCHS}"
+mlp = MLP(input_size=300, hidden_layer=1024).to(device)
 
 # Define the loss function and optimizer
 loss_function = nn.L1Loss()
@@ -85,6 +87,20 @@ test_losses = []
 
 for epoch in range(EPOCHS):
     print(f"Starting epoch {epoch+1}")
+    
+    test_loss = 0.0
+    with torch.no_grad():
+        for data in test_loader:
+            mol_vec, labels = data
+            mol_vec, labels = mol_vec.to(device), labels.to(device)
+            labels = labels.reshape((labels.shape[0], 1))
+            y_pred = mlp(mol_vec)
+            batch_loss = loss_function(y_pred, labels)
+            test_loss += batch_loss.item() * len(data[0])
+
+        test_loss /= len(test_set)
+        test_losses.append(test_loss)
+    
     train_loss = 0.0
     for data in train_loader:
 
@@ -100,19 +116,19 @@ for epoch in range(EPOCHS):
 
         # Compute loss
         loss = loss_function(outputs, targets)
-
+        train_loss += loss.item() * len(data[0])
+        
         # Perform backward pass
         loss.backward()
 
         # Perform optimization
         optimizer.step()
 
-        # Print statistics
-        train_loss += loss.item() * len(data[0])
-
     train_loss /= len(train_set)
-    print(f"training loss: {train_loss}")
     train_losses.append(train_loss)
+    print(f"training loss: {train_loss}")
+    print(f"test loss: {test_loss}")
+    print("")
 
     if train_loss >= 0.99 * prev_loss:
         stale += 1
@@ -125,26 +141,19 @@ for epoch in range(EPOCHS):
         print("training stopped")
         break
 
-    test_loss = 0.0
-    with torch.no_grad():
-        for data in test_loader:
-            mol_vec, labels = data
-            labels = labels.reshape((labels.shape[0], 1))
-            y_pred = mlp(mol_vec)
-            batch_loss = loss_function(y_pred, labels)
-            test_loss += batch_loss.item() * len(data[0])
+if SAVE_MODEL:
+    torch.save(mlp, MODEL_PATH+model_name) 
 
-        test_loss /= len(test_set)
-        test_losses.append(test_loss)
-        print(f"test loss: {test_loss}")
-        print("")
-
-
+#%%
 plt.figure(figsize=(10, 5))
 plt.title("Training and Test Loss")
-plt.plot(test_losses, label="test")
-plt.plot(train_losses, label="train")
-plt.xlabel("iterations")
+x_axis = np.arange(1, EPOCHS, step=1)
+plt.plot(x_axis, test_losses[1:], label="test")
+plt.plot(x_axis, train_losses[1:], label="train")
+plt.xticks(x_axis)
+plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.legend()
+plt.grid(axis='y')
+plt.savefig(WRITE_LOC + model_name+".png")
 plt.show()

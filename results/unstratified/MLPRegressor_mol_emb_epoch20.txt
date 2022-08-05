@@ -1,0 +1,60 @@
+Epoch 0
+Training Loss: 315.961
+Test Loss: 695.138
+Epoch 1
+Training Loss: 67.486
+Test Loss: 83.522
+Epoch 2
+Training Loss: 53.057
+Test Loss: 57.338
+Epoch 3
+Training Loss: 49.324
+Test Loss: 51.033
+Epoch 4
+Training Loss: 47.617
+Test Loss: 48.700
+Epoch 5
+Training Loss: 46.607
+Test Loss: 47.448
+Epoch 6
+Training Loss: 45.936
+Test Loss: 46.784
+Epoch 7
+Training Loss: 45.478
+Test Loss: 46.156
+Epoch 8
+Training Loss: 45.151
+Test Loss: 45.802
+Epoch 9
+Training Loss: 44.898
+Test Loss: 45.707
+Epoch 10
+Training Loss: 44.689
+Test Loss: 45.354
+Epoch 11
+Training Loss: 44.503
+Test Loss: 45.266
+Epoch 12
+Training Loss: 44.376
+Test Loss: 45.080
+Epoch 13
+Training Loss: 44.233
+Test Loss: 45.214
+Epoch 14
+Training Loss: 44.112
+Test Loss: 44.770
+Epoch 15
+Training Loss: 44.010
+Test Loss: 44.651
+Epoch 16
+Training Loss: 43.913
+Test Loss: 44.703
+Epoch 17
+Training Loss: 43.822
+Test Loss: 44.507
+Epoch 18
+Training Loss: 43.744
+Test Loss: 44.710
+Epoch 19
+Training Loss: 43.657
+Test Loss: 44.343
