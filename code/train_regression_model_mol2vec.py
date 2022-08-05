@@ -36,24 +36,48 @@ with open(DATA_PATH + broad2vec_file, "r") as infile1:
 features = np.load(DATA_PATH + features_file)
 
 #%%
-X = []
-y = []
+LEAST_SAMPLE_COUNT = 8
+TEST_SIZE = 0.5
+EARLY_STOPPING = 5
+EPOCHS = 200
+SAVE_MODEL = False
+MODEL_NAME = f"MLPRegressor_mol_vec_epoch{EPOCHS}_ts{TEST_SIZE}"
+
+X_train = []
+X_test = []
+y_train = []
+y_test = []
 
 for broad_id, mol_vec in broad2vec.items():
     # turn mol_vec (saved in json as list) into a numpy array
     mol_vec = np.array(mol_vec)
     row_indices = broad2features[broad_id]
-    for row_ind in row_indices:
+
+    l = min(len(row_indices), LEAST_SAMPLE_COUNT)
+    np.random.shuffle(row_indices)
+    row_indices = row_indices[:l]
+    test_inds, train_inds = (
+        row_indices[: int(l * TEST_SIZE)],
+        row_indices[int(l * TEST_SIZE) :],
+    )
+
+    if np.random.uniform() > TEST_SIZE:
+        for ind in train_inds:
+            # cell_area = features[row_ind, 0]
+            # cytoplasm_area = features[row_ind, 596]
+            nuclei_area = features[ind, 1178]
+            y_train.append(nuclei_area)
+            X_train.append(mol_vec)
+    for ind in test_inds:
         # cell_area = features[row_ind, 0]
         # cytoplasm_area = features[row_ind, 596]
-        nuclei_area = features[row_ind, 1178]
-        y.append(nuclei_area)
-        X.append(mol_vec)
+        nuclei_area = features[ind, 1178]
+        y_test.append(nuclei_area)
+        X_test.append(mol_vec)
 
 #%%
-X = np.array(X)
-y = np.array(y)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+X_train, X_test = np.array(X_train), np.array(X_test)
+y_train, y_test = np.array(y_train), np.array(y_test)
 
 X_train = torch.from_numpy(X_train).float()
 X_test = torch.from_numpy(X_test).float()
@@ -64,9 +88,6 @@ y_test = torch.from_numpy(y_test).float()
 
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu")
-EARLY_STOPPING = 5
-EPOCHS = 20
-SAVE_MODEL = False
 
 train_set = Dataset(X_train, y_train)
 test_set = Dataset(X_test, y_test)
@@ -74,11 +95,10 @@ train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
-model_name = f"MLPRegressor_mol_vec_epoch{EPOCHS}"
 mlp = MLP(input_size=300, hidden_layer=1024).to(device)
 
 # Define the loss function and optimizer
-loss_function = nn.L1Loss()
+loss_function = nn.MSELoss()
 optimizer = torch.optim.Adam(mlp.parameters(), lr=1e-4)
 prev_loss = 0.0
 stale = 0.0
@@ -87,7 +107,7 @@ test_losses = []
 
 for epoch in range(EPOCHS):
     print(f"Starting epoch {epoch+1}")
-    
+
     test_loss = 0.0
     with torch.no_grad():
         for data in test_loader:
@@ -95,12 +115,12 @@ for epoch in range(EPOCHS):
             mol_vec, labels = mol_vec.to(device), labels.to(device)
             labels = labels.reshape((labels.shape[0], 1))
             y_pred = mlp(mol_vec)
-            batch_loss = loss_function(y_pred, labels)
+            batch_loss = torch.sqrt(loss_function(y_pred, labels))
             test_loss += batch_loss.item() * len(data[0])
 
         test_loss /= len(test_set)
         test_losses.append(test_loss)
-    
+
     train_loss = 0.0
     for data in train_loader:
 
@@ -115,9 +135,9 @@ for epoch in range(EPOCHS):
         outputs = mlp(inputs)
 
         # Compute loss
-        loss = loss_function(outputs, targets)
+        loss = torch.sqrt(loss_function(outputs, targets))
         train_loss += loss.item() * len(data[0])
-        
+
         # Perform backward pass
         loss.backward()
 
@@ -130,19 +150,27 @@ for epoch in range(EPOCHS):
     print(f"test loss: {test_loss}")
     print("")
 
-    if train_loss >= 0.99 * prev_loss:
+    with open(WRITE_LOC + MODEL_NAME + ".txt", "w") as infile1:
+        epoch_message = [
+            f"Epoch {epoch}",
+            f"Training Loss: {train_loss:.3f}",
+            f"Test Loss: {test_loss:.3f}",
+        ]
+        infile1.write("\n".join(epoch_message) + "\n" * 2)
+
+    if test_loss >= 0.99 * prev_loss:
         stale += 1
-        prev_loss = np.mean(train_losses[-EARLY_STOPPING:])
+        prev_loss = np.mean(test_losses[-EARLY_STOPPING:])
     else:
         stale = 0
 
     if stale == EARLY_STOPPING:
-        print(f"train loss not imroving for {EARLY_STOPPING} epochs.")
+        print(f"test loss not imroving for {EARLY_STOPPING} epochs.")
         print("training stopped")
         break
 
 if SAVE_MODEL:
-    torch.save(mlp, MODEL_PATH+model_name) 
+    torch.save(mlp, MODEL_PATH + MODEL_NAME)
 
 #%%
 plt.figure(figsize=(10, 5))
@@ -154,6 +182,6 @@ plt.xticks(x_axis)
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.legend()
-plt.grid(axis='y')
-plt.savefig(WRITE_LOC + model_name+".png")
+plt.grid(axis="y")
+plt.savefig(WRITE_LOC + MODEL_NAME + ".png")
 plt.show()

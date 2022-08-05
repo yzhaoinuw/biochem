@@ -1,0 +1,4 @@
+Epoch 99
+Training Loss: 73.379
+Test Loss: 73.166
+

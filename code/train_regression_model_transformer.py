@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # from sklearn.preprocessing import StandardScaler, MinMaxScaler
-from sklearn.model_selection import train_test_split
+# from sklearn.model_selection import train_test_split
 
 import torch
 from torch import nn
@@ -43,8 +43,8 @@ features = np.load(DATA_PATH + features_file)
 LEAST_SAMPLE_COUNT = 8
 TEST_SIZE = 0.5
 EARLY_STOPPING = 10
-EPOCHS = 30
-SAVE_MODEL = True
+EPOCHS = 100
+SAVE_MODEL = False
 
 X_train = []
 X_test = []
@@ -58,25 +58,29 @@ for broad_id, smiles in broad2smiles.items():
         continue
     embedding = np.mean(embedding, axis=0)
     row_indices = broad2features[broad_id]
-    
+
     l = min(len(row_indices), LEAST_SAMPLE_COUNT)
     np.random.shuffle(row_indices)
     row_indices = row_indices[:l]
-    test_inds, train_inds= row_indices[:int(l*TEST_SIZE)], row_indices[int(l*TEST_SIZE):]
-    
-    for ind in train_inds:
-        # cell_area = features[row_ind, 0]
-        # cytoplasm_area = features[row_ind, 596]
-        nuclei_area = features[ind, 1178]
-        y_train.append(nuclei_area)
-        X_train.append(embedding)
+    test_inds, train_inds = (
+        row_indices[: int(l * TEST_SIZE)],
+        row_indices[int(l * TEST_SIZE) :],
+    )
+
+    if np.random.uniform() > TEST_SIZE:
+        for ind in train_inds:
+            # cell_area = features[row_ind, 0]
+            # cytoplasm_area = features[row_ind, 596]
+            nuclei_area = features[ind, 1178]
+            y_train.append(nuclei_area)
+            X_train.append(embedding)
     for ind in test_inds:
         # cell_area = features[row_ind, 0]
         # cytoplasm_area = features[row_ind, 596]
         nuclei_area = features[ind, 1178]
         y_test.append(nuclei_area)
-        X_test.append(embedding)    
-    
+        X_test.append(embedding)
+
 
 #%%
 X_train, X_test = np.array(X_train), np.array(X_test)
@@ -98,11 +102,11 @@ train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
-model_name = f"MLPRegressor_mol_emb_epoch{EPOCHS}"
+model_name = f"MLPRegressor_mol_emb_epoch{EPOCHS}_ts{TEST_SIZE}"
 mlp = MLP(input_size=512, hidden_layer=1024).to(device)
 
 # Define the loss function and optimizer
-loss_function = nn.L1Loss()
+loss_function = nn.MSELoss()
 optimizer = torch.optim.Adam(mlp.parameters(), lr=1e-4)
 prev_loss = 0.0
 stale = 0.0
@@ -119,7 +123,7 @@ for epoch in range(EPOCHS):
             mol_emb, labels = mol_emb.to(device), labels.to(device)
             labels = labels.reshape((labels.shape[0], 1))
             y_pred = mlp(mol_emb)
-            batch_loss = loss_function(y_pred, labels)
+            batch_loss = torch.sqrt(loss_function(y_pred, labels))
             test_loss += batch_loss.item() * len(data[0])
 
         test_loss /= len(test_set)
@@ -139,7 +143,7 @@ for epoch in range(EPOCHS):
         outputs = mlp(inputs)
 
         # Compute loss
-        loss = loss_function(outputs, targets)
+        loss = torch.sqrt(loss_function(outputs, targets))
 
         # Perform backward pass
         loss.backward()
@@ -162,7 +166,7 @@ for epoch in range(EPOCHS):
             f"Training Loss: {train_loss:.3f}",
             f"Test Loss: {test_loss:.3f}",
         ]
-        infile1.write("\n".join(epoch_message)+"\n"*2)
+        infile1.write("\n".join(epoch_message) + "\n" * 2)
 
     if test_loss >= 0.99 * prev_loss:
         stale += 1
@@ -171,13 +175,13 @@ for epoch in range(EPOCHS):
         stale = 0
 
     if stale == EARLY_STOPPING:
-        print(f"train loss not imroving for {EARLY_STOPPING} epochs.")
+        print(f"test loss not imroving for {EARLY_STOPPING} epochs.")
         print("training stopped")
         break
-  
+
 if SAVE_MODEL:
-    torch.save(mlp, MODEL_PATH+model_name)    
-    
+    torch.save(mlp, MODEL_PATH + model_name)
+
 #%%
 plt.figure(figsize=(10, 5))
 plt.title("Training and Test Loss")
@@ -188,8 +192,6 @@ plt.xticks(x_axis)
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.legend()
-plt.grid(axis='y')
-plt.savefig(WRITE_LOC + model_name+".png")
+plt.grid(axis="y")
+plt.savefig(WRITE_LOC + model_name + ".png")
 plt.show()
-
-

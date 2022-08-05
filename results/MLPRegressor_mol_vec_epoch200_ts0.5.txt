@@ -1,0 +1,4 @@
+Epoch 199
+Training Loss: 72.991
+Test Loss: 73.414
+
