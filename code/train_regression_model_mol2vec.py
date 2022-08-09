@@ -37,14 +37,17 @@ features = np.load(DATA_PATH + features_file)
 
 #%%
 LEAST_SAMPLE_COUNT = 8
-TEST_SIZE = 0.5
+VALID_SIZE = 0.3
+TEST_SIZE = 0.2
 EARLY_STOPPING = 5
-EPOCHS = 200
+EPOCHS = 100
 SAVE_MODEL = False
 MODEL_NAME = f"MLPRegressor_mol_vec_epoch{EPOCHS}_ts{TEST_SIZE}"
 
 X_train = []
 X_test = []
+X_valid = []
+y_valid = []
 y_train = []
 y_test = []
 
@@ -56,32 +59,36 @@ for broad_id, mol_vec in broad2vec.items():
     l = min(len(row_indices), LEAST_SAMPLE_COUNT)
     np.random.shuffle(row_indices)
     row_indices = row_indices[:l]
-    test_inds, train_inds = (
-        row_indices[: int(l * TEST_SIZE)],
-        row_indices[int(l * TEST_SIZE) :],
+    test_inds, valid_inds, train_inds = (
+        row_indices[: round(l * TEST_SIZE)],
+        row_indices[round(l * TEST_SIZE): round(l * (TEST_SIZE+VALID_SIZE))],
+        row_indices[round(l * (TEST_SIZE+VALID_SIZE)) :],
     )
 
-    if np.random.uniform() > TEST_SIZE:
-        for ind in train_inds:
-            # cell_area = features[row_ind, 0]
-            # cytoplasm_area = features[row_ind, 596]
-            nuclei_area = features[ind, 1178]
-            y_train.append(nuclei_area)
-            X_train.append(mol_vec)
-    for ind in test_inds:
-        # cell_area = features[row_ind, 0]
-        # cytoplasm_area = features[row_ind, 596]
-        nuclei_area = features[ind, 1178]
-        y_test.append(nuclei_area)
-        X_test.append(mol_vec)
-
+    if np.random.uniform() > TEST_SIZE+VALID_SIZE:
+        # cell_area = features[train_inds, 0]
+            # cytoplasm_area = features[train_inds, 596]
+        nuclei_area = features[train_inds, 1178]
+        y_train.extend(nuclei_area)
+        X_train.extend([mol_vec for i in range(len(train_inds))])
+    
+    nuclei_area = features[valid_inds, 1178]
+    y_valid.extend(nuclei_area)
+    X_valid.extend(mol_vec for i in range(len(valid_inds)))
+    
+    nuclei_area = features[test_inds, 1178]
+    y_test.extend(nuclei_area)
+    X_test.extend(mol_vec for i in range(len(test_inds)))
+            
 #%%
-X_train, X_test = np.array(X_train), np.array(X_test)
-y_train, y_test = np.array(y_train), np.array(y_test)
+X_train, X_valid, X_test = np.array(X_train), np.array(X_valid), np.array(X_test)
+y_train, y_valid, y_test = np.array(y_train), np.array(y_valid), np.array(y_test)
 
 X_train = torch.from_numpy(X_train).float()
+X_valid = torch.from_numpy(X_valid).float()
 X_test = torch.from_numpy(X_test).float()
 y_train = torch.from_numpy(y_train).float()
+y_valid = torch.from_numpy(y_valid).float()
 y_test = torch.from_numpy(y_test).float()
 
 #%%
@@ -90,9 +97,9 @@ use_cuda = torch.cuda.is_available()
 device = torch.device("cuda:0" if use_cuda else "cpu")
 
 train_set = Dataset(X_train, y_train)
-test_set = Dataset(X_test, y_test)
+valid_set = Dataset(X_valid, y_valid)
 train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
-test_loader = DataLoader(test_set, batch_size=64, shuffle=True)
+valid_loader = DataLoader(valid_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
 mlp = MLP(input_size=300, hidden_layer=1024).to(device)
@@ -103,23 +110,23 @@ optimizer = torch.optim.Adam(mlp.parameters(), lr=1e-4)
 prev_loss = 0.0
 stale = 0.0
 train_losses = []
-test_losses = []
+valid_losses = []
 
 for epoch in range(EPOCHS):
     print(f"Starting epoch {epoch+1}")
 
-    test_loss = 0.0
+    valid_loss = 0.0
     with torch.no_grad():
-        for data in test_loader:
+        for data in valid_loader:
             mol_vec, labels = data
             mol_vec, labels = mol_vec.to(device), labels.to(device)
             labels = labels.reshape((labels.shape[0], 1))
             y_pred = mlp(mol_vec)
             batch_loss = torch.sqrt(loss_function(y_pred, labels))
-            test_loss += batch_loss.item() * len(data[0])
+            valid_loss += batch_loss.item() * len(data[0])
 
-        test_loss /= len(test_set)
-        test_losses.append(test_loss)
+        valid_loss /= len(valid_set)
+        valid_losses.append(valid_loss)
 
     train_loss = 0.0
     for data in train_loader:
@@ -135,37 +142,37 @@ for epoch in range(EPOCHS):
         outputs = mlp(inputs)
 
         # Compute loss
-        loss = torch.sqrt(loss_function(outputs, targets))
-        train_loss += loss.item() * len(data[0])
-
+        loss = loss_function(outputs, targets)
         # Perform backward pass
         loss.backward()
 
         # Perform optimization
         optimizer.step()
+        
+        train_loss += torch.sqrt(loss).item() * len(data[0])
 
     train_loss /= len(train_set)
     train_losses.append(train_loss)
     print(f"training loss: {train_loss}")
-    print(f"test loss: {test_loss}")
+    print(f"validation loss: {valid_loss}")
     print("")
 
-    with open(WRITE_LOC + MODEL_NAME + ".txt", "w") as infile1:
+    with open(WRITE_LOC + MODEL_NAME + ".txt", "a") as infile1:
         epoch_message = [
             f"Epoch {epoch}",
             f"Training Loss: {train_loss:.3f}",
-            f"Test Loss: {test_loss:.3f}",
+            f"Validation Loss: {valid_loss:.3f}",
         ]
         infile1.write("\n".join(epoch_message) + "\n" * 2)
 
-    if test_loss >= 0.99 * prev_loss:
+    if valid_loss >= 0.99 * prev_loss:
         stale += 1
-        prev_loss = np.mean(test_losses[-EARLY_STOPPING:])
+        prev_loss = np.mean(valid_losses[-EARLY_STOPPING:])
     else:
         stale = 0
 
     if stale == EARLY_STOPPING:
-        print(f"test loss not imroving for {EARLY_STOPPING} epochs.")
+        print(f"validation loss not imroving for {EARLY_STOPPING} epochs.")
         print("training stopped")
         break
 
@@ -176,7 +183,7 @@ if SAVE_MODEL:
 plt.figure(figsize=(10, 5))
 plt.title("Training and Test Loss")
 x_axis = np.arange(1, EPOCHS, step=1)
-plt.plot(x_axis, test_losses[1:], label="test")
+plt.plot(x_axis, valid_losses[1:], label="test")
 plt.plot(x_axis, train_losses[1:], label="train")
 plt.xticks(x_axis)
 plt.xlabel("Epoch")

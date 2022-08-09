@@ -1,0 +1,4 @@
+Epoch 49
+Training Loss: 70.881
+Test Loss: 71.554
+

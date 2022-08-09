@@ -22,3 +22,20 @@ class MLP(nn.Module):
         # x = self.flatten(x)
         logits = self.linear_relu_stack(x)
         return logits
+
+class DMLP(nn.Module):
+    def __init__(self, input_size, hidden_layer1, hidden_layer2, output_size=1):
+        super(DMLP, self).__init__()
+        # self.flatten = nn.Flatten()
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(input_size, hidden_layer1),
+            nn.ReLU(),
+            nn.Linear(hidden_layer1, hidden_layer2),
+            nn.ReLU(),
+            nn.Linear(hidden_layer2, output_size),
+        )
+
+    def forward(self, x):
+        # x = self.flatten(x)
+        logits = self.linear_relu_stack(x)
+        return logits

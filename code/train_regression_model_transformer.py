@@ -17,7 +17,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 
 from dataset import Dataset
-from neural_networks import MLP
+from neural_networks import MLP, DMLP
 
 DATA_PATH = "../data/"
 WRITE_LOC = "../data/"
@@ -43,8 +43,9 @@ features = np.load(DATA_PATH + features_file)
 LEAST_SAMPLE_COUNT = 8
 TEST_SIZE = 0.5
 EARLY_STOPPING = 10
-EPOCHS = 100
+EPOCHS = 50
 SAVE_MODEL = False
+MODEL_NAME = f"DMLPRegressor_mol_emb_epoch{EPOCHS}_ts{TEST_SIZE}"
 
 X_train = []
 X_test = []
@@ -102,8 +103,7 @@ train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
 test_loader = DataLoader(test_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
-model_name = f"MLPRegressor_mol_emb_epoch{EPOCHS}_ts{TEST_SIZE}"
-mlp = MLP(input_size=512, hidden_layer=1024).to(device)
+mlp = DMLP(input_size=512, hidden_layer1=1024, hidden_layer2=256).to(device)
 
 # Define the loss function and optimizer
 loss_function = nn.MSELoss()
@@ -160,7 +160,7 @@ for epoch in range(EPOCHS):
     print(f"test loss: {test_loss}")
     print("")
 
-    with open(WRITE_LOC + model_name + ".txt", "w") as infile1:
+    with open(WRITE_LOC + MODEL_NAME + ".txt", "w") as infile1:
         epoch_message = [
             f"Epoch {epoch}",
             f"Training Loss: {train_loss:.3f}",
@@ -180,7 +180,7 @@ for epoch in range(EPOCHS):
         break
 
 if SAVE_MODEL:
-    torch.save(mlp, MODEL_PATH + model_name)
+    torch.save(mlp, MODEL_PATH + MODEL_NAME)
 
 #%%
 plt.figure(figsize=(10, 5))
@@ -193,5 +193,5 @@ plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.legend()
 plt.grid(axis="y")
-plt.savefig(WRITE_LOC + model_name + ".png")
+plt.savefig(WRITE_LOC + MODEL_NAME + ".png")
 plt.show()
