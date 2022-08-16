@@ -1,0 +1,400 @@
+Epoch 0
+Training Loss: 300.827
+Validation Loss: 700.385
+
+Epoch 1
+Training Loss: 94.094
+Validation Loss: 112.227
+
+Epoch 2
+Training Loss: 81.886
+Validation Loss: 90.584
+
+Epoch 3
+Training Loss: 78.131
+Validation Loss: 84.448
+
+Epoch 4
+Training Loss: 75.899
+Validation Loss: 82.009
+
+Epoch 5
+Training Loss: 74.534
+Validation Loss: 80.516
+
+Epoch 6
+Training Loss: 73.832
+Validation Loss: 79.075
+
+Epoch 7
+Training Loss: 73.168
+Validation Loss: 78.484
+
+Epoch 8
+Training Loss: 72.593
+Validation Loss: 78.045
+
+Epoch 9
+Training Loss: 72.073
+Validation Loss: 77.439
+
+Epoch 10
+Training Loss: 71.915
+Validation Loss: 77.080
+
+Epoch 11
+Training Loss: 71.502
+Validation Loss: 76.922
+
+Epoch 12
+Training Loss: 71.486
+Validation Loss: 76.571
+
+Epoch 13
+Training Loss: 71.350
+Validation Loss: 76.755
+
+Epoch 14
+Training Loss: 70.958
+Validation Loss: 76.568
+
+Epoch 15
+Training Loss: 70.865
+Validation Loss: 75.944
+
+Epoch 16
+Training Loss: 70.751
+Validation Loss: 75.863
+
+Epoch 17
+Training Loss: 71.054
+Validation Loss: 76.130
+
+Epoch 18
+Training Loss: 70.592
+Validation Loss: 76.381
+
+Epoch 19
+Training Loss: 70.672
+Validation Loss: 76.169
+
+Epoch 20
+Training Loss: 70.520
+Validation Loss: 75.619
+
+Epoch 21
+Training Loss: 70.405
+Validation Loss: 75.384
+
+Epoch 22
+Training Loss: 70.453
+Validation Loss: 75.833
+
+Epoch 23
+Training Loss: 70.047
+Validation Loss: 75.317
+
+Epoch 24
+Training Loss: 70.261
+Validation Loss: 75.667
+
+Epoch 25
+Training Loss: 70.002
+Validation Loss: 75.401
+
+Epoch 26
+Training Loss: 69.998
+Validation Loss: 75.280
+
+Epoch 27
+Training Loss: 69.718
+Validation Loss: 75.153
+
+Epoch 28
+Training Loss: 69.883
+Validation Loss: 75.037
+
+Epoch 29
+Training Loss: 69.812
+Validation Loss: 75.383
+
+Epoch 30
+Training Loss: 69.682
+Validation Loss: 75.282
+
+Epoch 31
+Training Loss: 69.714
+Validation Loss: 75.692
+
+Epoch 32
+Training Loss: 69.570
+Validation Loss: 75.199
+
+Epoch 33
+Training Loss: 69.716
+Validation Loss: 76.334
+
+Epoch 34
+Training Loss: 69.659
+Validation Loss: 74.839
+
+Epoch 35
+Training Loss: 69.432
+Validation Loss: 75.858
+
+Epoch 36
+Training Loss: 69.593
+Validation Loss: 74.696
+
+Epoch 37
+Training Loss: 69.450
+Validation Loss: 74.645
+
+Epoch 38
+Training Loss: 69.443
+Validation Loss: 75.190
+
+Epoch 39
+Training Loss: 69.389
+Validation Loss: 74.724
+
+Epoch 40
+Training Loss: 69.546
+Validation Loss: 75.341
+
+Epoch 41
+Training Loss: 69.223
+Validation Loss: 74.513
+
+Epoch 42
+Training Loss: 69.238
+Validation Loss: 74.821
+
+Epoch 43
+Training Loss: 69.284
+Validation Loss: 74.965
+
+Epoch 44
+Training Loss: 69.190
+Validation Loss: 74.770
+
+Epoch 45
+Training Loss: 69.171
+Validation Loss: 74.458
+
+Epoch 46
+Training Loss: 69.261
+Validation Loss: 75.010
+
+Epoch 47
+Training Loss: 68.970
+Validation Loss: 74.947
+
+Epoch 48
+Training Loss: 69.033
+Validation Loss: 74.592
+
+Epoch 49
+Training Loss: 69.028
+Validation Loss: 74.483
+
+Epoch 50
+Training Loss: 68.929
+Validation Loss: 74.703
+
+Epoch 51
+Training Loss: 68.958
+Validation Loss: 74.929
+
+Epoch 52
+Training Loss: 68.897
+Validation Loss: 74.131
+
+Epoch 53
+Training Loss: 69.026
+Validation Loss: 75.018
+
+Epoch 54
+Training Loss: 69.040
+Validation Loss: 74.751
+
+Epoch 55
+Training Loss: 68.720
+Validation Loss: 74.619
+
+Epoch 56
+Training Loss: 68.631
+Validation Loss: 74.277
+
+Epoch 57
+Training Loss: 68.840
+Validation Loss: 74.288
+
+Epoch 58
+Training Loss: 68.549
+Validation Loss: 74.580
+
+Epoch 59
+Training Loss: 68.914
+Validation Loss: 74.363
+
+Epoch 60
+Training Loss: 68.481
+Validation Loss: 74.137
+
+Epoch 61
+Training Loss: 68.624
+Validation Loss: 74.196
+
+Epoch 62
+Training Loss: 68.504
+Validation Loss: 75.974
+
+Epoch 63
+Training Loss: 68.446
+Validation Loss: 74.226
+
+Epoch 64
+Training Loss: 68.545
+Validation Loss: 74.150
+
+Epoch 65
+Training Loss: 68.588
+Validation Loss: 74.285
+
+Epoch 66
+Training Loss: 68.521
+Validation Loss: 74.004
+
+Epoch 67
+Training Loss: 68.613
+Validation Loss: 74.761
+
+Epoch 68
+Training Loss: 68.417
+Validation Loss: 74.077
+
+Epoch 69
+Training Loss: 68.354
+Validation Loss: 74.743
+
+Epoch 70
+Training Loss: 68.511
+Validation Loss: 73.607
+
+Epoch 71
+Training Loss: 68.372
+Validation Loss: 73.916
+
+Epoch 72
+Training Loss: 68.149
+Validation Loss: 74.277
+
+Epoch 73
+Training Loss: 68.194
+Validation Loss: 73.977
+
+Epoch 74
+Training Loss: 68.252
+Validation Loss: 74.051
+
+Epoch 75
+Training Loss: 68.259
+Validation Loss: 73.793
+
+Epoch 76
+Training Loss: 68.265
+Validation Loss: 74.048
+
+Epoch 77
+Training Loss: 68.170
+Validation Loss: 74.109
+
+Epoch 78
+Training Loss: 68.026
+Validation Loss: 73.764
+
+Epoch 79
+Training Loss: 68.017
+Validation Loss: 73.741
+
+Epoch 80
+Training Loss: 68.309
+Validation Loss: 73.947
+
+Epoch 81
+Training Loss: 68.010
+Validation Loss: 74.144
+
+Epoch 82
+Training Loss: 68.094
+Validation Loss: 74.051
+
+Epoch 83
+Training Loss: 67.859
+Validation Loss: 73.772
+
+Epoch 84
+Training Loss: 67.869
+Validation Loss: 73.848
+
+Epoch 85
+Training Loss: 68.112
+Validation Loss: 74.146
+
+Epoch 86
+Training Loss: 67.943
+Validation Loss: 73.884
+
+Epoch 87
+Training Loss: 67.981
+Validation Loss: 73.826
+
+Epoch 88
+Training Loss: 67.971
+Validation Loss: 73.773
+
+Epoch 89
+Training Loss: 67.898
+Validation Loss: 73.868
+
+Epoch 90
+Training Loss: 68.076
+Validation Loss: 73.762
+
+Epoch 91
+Training Loss: 67.782
+Validation Loss: 74.263
+
+Epoch 92
+Training Loss: 67.836
+Validation Loss: 73.882
+
+Epoch 93
+Training Loss: 67.672
+Validation Loss: 74.279
+
+Epoch 94
+Training Loss: 67.735
+Validation Loss: 73.692
+
+Epoch 95
+Training Loss: 67.583
+Validation Loss: 73.735
+
+Epoch 96
+Training Loss: 67.728
+Validation Loss: 73.750
+
+Epoch 97
+Training Loss: 67.747
+Validation Loss: 74.016
+
+Epoch 98
+Training Loss: 67.849
+Validation Loss: 73.834
+
+Epoch 99
+Training Loss: 67.805
+Validation Loss: 75.109
+

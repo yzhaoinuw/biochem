@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul 18 23:58:22 2022
+Created on Sun Aug 14 23:44:28 2022
 
 @author: Yue
 """
@@ -9,8 +9,7 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 
-# from sklearn.preprocessing import StandardScaler, MinMaxScaler
-# from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 import torch
 from torch import nn
@@ -46,8 +45,8 @@ VALID_SIZE = 0.3
 TEST_SIZE = 0.2
 EARLY_STOPPING = 5
 EPOCHS = 100
-SAVE_MODEL = False
-MODEL_NAME = f"DMLPRegressor_mol_emb_epoch{EPOCHS}_ts{TEST_SIZE}"
+SAVE_MODEL = True
+MODEL_NAME = f"multivariate_DMLPRegressor_mol_emb_epoch{EPOCHS}_ts{TEST_SIZE}"
 
 X_train = []
 X_test = []
@@ -75,23 +74,31 @@ for broad_id, smiles in broad2smiles.items():
 
     if np.random.uniform() > TEST_SIZE+VALID_SIZE:
         # cell_area = features[train_inds, 0]
-            # cytoplasm_area = features[train_inds, 596]
-        nuclei_area = features[train_inds, 1178]
-        y_train.extend(nuclei_area)
+        # cytoplasm_area = features[train_inds, 596]
+        # nuclei_area = features[train_inds, 1178]
+        y_train.extend(features[train_inds])
         X_train.extend([embedding for i in range(len(train_inds))])
     
-    nuclei_area = features[valid_inds, 1178]
-    y_valid.extend(nuclei_area)
+    #nuclei_area = features[valid_inds, 1178]
+    y_valid.extend(features[valid_inds])
     X_valid.extend(embedding for i in range(len(valid_inds)))
     
-    nuclei_area = features[test_inds, 1178]
-    y_test.extend(nuclei_area)
+    #nuclei_area = features[test_inds, 1178]
+    y_test.extend(features[test_inds])
     X_test.extend(embedding for i in range(len(test_inds)))
 
-
 #%%
+scaler = StandardScaler()
+y_train = scaler.fit_transform(y_train)
+y_valid, y_test = scaler.transform(y_valid), scaler.transform(y_test)
+
 X_train, X_valid, X_test = np.array(X_train), np.array(X_valid), np.array(X_test)
 y_train, y_valid, y_test = np.array(y_train), np.array(y_valid), np.array(y_test)
+
+#%%
+
+use_cuda = torch.cuda.is_available()
+device = torch.device("cuda:0" if use_cuda else "cpu")
 
 X_train = torch.from_numpy(X_train).float()
 X_valid = torch.from_numpy(X_valid).float()
@@ -100,21 +107,16 @@ y_train = torch.from_numpy(y_train).float()
 y_valid = torch.from_numpy(y_valid).float()
 y_test = torch.from_numpy(y_test).float()
 
-#%%
-
-use_cuda = torch.cuda.is_available()
-device = torch.device("cuda:0" if use_cuda else "cpu")
-
 train_set = Dataset(X_train, y_train)
 valid_set = Dataset(X_valid, y_valid)
 train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
 valid_loader = DataLoader(valid_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
-mlp = DMLP(input_size=512, hidden_layer1=1024, hidden_layer2=256).to(device)
+mlp = DMLP(input_size=512, hidden_layer1=1024, hidden_layer2=256, output_size=1783).to(device)
 
 # Define the loss function and optimizer
-loss_function = nn.MSELoss()
+loss_function = nn.MSELoss(reduction='none')
 optimizer = torch.optim.Adam(mlp.parameters(), lr=1e-4)
 prev_loss = 0.0
 stale = 0.0
@@ -129,10 +131,10 @@ for epoch in range(EPOCHS):
         for data in valid_loader:
             mol_vec, labels = data
             mol_vec, labels = mol_vec.to(device), labels.to(device)
-            labels = labels.reshape((labels.shape[0], 1))
             y_pred = mlp(mol_vec)
-            batch_loss = torch.sqrt(loss_function(y_pred, labels))
-            valid_loss += batch_loss.item() * len(data[0])
+            batch_loss = loss_function(y_pred, labels)
+            batch_loss = torch.sum(batch_loss)
+            valid_loss += batch_loss.item()
 
         valid_loss /= len(valid_set)
         valid_losses.append(valid_loss)
@@ -143,7 +145,6 @@ for epoch in range(EPOCHS):
         # Get and prepare inputs
         inputs, targets = data
         inputs, targets = inputs.to(device), targets.to(device)
-        targets = targets.reshape((targets.shape[0], 1))
         # Zero the gradients
         optimizer.zero_grad()
 
@@ -152,13 +153,15 @@ for epoch in range(EPOCHS):
 
         # Compute loss
         loss = loss_function(outputs, targets)
+        loss = torch.sum(loss)
+        
         # Perform backward pass
         loss.backward()
 
         # Perform optimization
         optimizer.step()
         
-        train_loss += torch.sqrt(loss).item() * len(data[0])
+        train_loss += loss.item()
 
     train_loss /= len(train_set)
     train_losses.append(train_loss)
@@ -203,21 +206,3 @@ plt.grid(axis="y")
 if SAVE_MODEL:
     plt.savefig(WRITE_LOC + MODEL_NAME + ".png")
 plt.show()
-#%%
-mlp.cpu()
-y_test_pred = mlp(X_test)
-y_test_pred = torch.squeeze(y_test_pred, 1)
-
-y_test_sorted, indices = torch.sort(y_test)
-rankings = []
-for i, y in enumerate(y_test):
-    ranking_cover = calculate_rank(y_test_sorted, y, y_test_pred[i]) 
-    rankings.append(ranking_cover)
-    
-#%%
-rankings = np.array(rankings)
-#%%
-plt.hist(rankings, bins=20, edgecolor='black')
-plt.xticks(np.arange(0, 1, step=0.05), rotation = 45)
-plt.grid(axis='y')
-plt.annotate(f'Total Count: {len(y_test)}', xy=(0.7, 0.9), xycoords='axes fraction')
