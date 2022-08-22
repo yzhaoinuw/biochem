@@ -20,7 +20,6 @@ from evaluate import calculate_rank
 from neural_networks import MLP, DMLP
 
 DATA_PATH = "../data/"
-WRITE_LOC = "../data/"
 MODEL_PATH = "../model/"
 WRITE_LOC = "../results/"
 
@@ -45,7 +44,7 @@ VALID_SIZE = 0.3
 TEST_SIZE = 0.2
 EARLY_STOPPING = 5
 EPOCHS = 100
-SAVE_MODEL = True
+SAVE_MODEL = False
 MODEL_NAME = f"multivariate_DMLPRegressor_mol_emb_epoch{EPOCHS}_ts{TEST_SIZE}"
 
 X_train = []

@@ -41,7 +41,7 @@ sorted_count = sorted(sample_count.items(), key=lambda kv: -kv[1])
 
 features_standardized = stats.zscore(features, axis=1, ddof=1)
 #%%
-
+'''
 N = 50
 pca = PCA(n_components=N)
 model = pca.fit(features_standardized)
@@ -51,3 +51,4 @@ main_components = np.absolute(model.components_[main_components])
 main_feature_inds = np.unique(np.transpose((main_components > 0.1).nonzero())[:, -1])
 main_features = feature_names[main_feature_inds]
 print(main_features)
+'''
