@@ -9,7 +9,8 @@ Created on Fri Apr 29 13:46:02 2022
 import json
 
 import numpy as np
-import pandas as pd
+
+# import pandas as pd
 from scipy import stats
 from sklearn.decomposition import PCA
 
@@ -39,10 +40,12 @@ features = np.load(DATA_PATH + features_file)
 sample_count = {broad: len(row_inds) for broad, row_inds in broad2features.items()}
 sorted_count = sorted(sample_count.items(), key=lambda kv: -kv[1])
 
-features_standardized = stats.zscore(features, axis=1, ddof=1)
+
 #%%
-'''
+"""
+features_standardized = stats.zscore(features, axis=1, ddof=1)
 N = 50
+
 pca = PCA(n_components=N)
 model = pca.fit(features_standardized)
 
@@ -51,4 +54,4 @@ main_components = np.absolute(model.components_[main_components])
 main_feature_inds = np.unique(np.transpose((main_components > 0.1).nonzero())[:, -1])
 main_features = feature_names[main_feature_inds]
 print(main_features)
-'''
+"""

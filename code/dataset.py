@@ -10,8 +10,8 @@ import torch
 
 class Dataset(torch.utils.data.Dataset):
     """
-  Prepare the Boston dataset for regression
-  """
+    Prepare the Boston dataset for regression
+    """
 
     def __init__(self, X, y):
         self.X = X

@@ -1,0 +1,503 @@
+Epoch 0
+Training Loss: 1561.224
+In sample validation Loss: 2071.881
+Out of sample validation Loss: 2060.702
+
+Epoch 1
+Training Loss: 1426.984
+In sample validation Loss: 1769.731
+Out of sample validation Loss: 1764.342
+
+Epoch 2
+Training Loss: 1389.097
+In sample validation Loss: 1696.448
+Out of sample validation Loss: 1692.307
+
+Epoch 3
+Training Loss: 1374.651
+In sample validation Loss: 1674.693
+Out of sample validation Loss: 1672.014
+
+Epoch 4
+Training Loss: 1366.191
+In sample validation Loss: 1665.842
+Out of sample validation Loss: 1663.527
+
+Epoch 5
+Training Loss: 1359.841
+In sample validation Loss: 1659.791
+Out of sample validation Loss: 1659.000
+
+Epoch 6
+Training Loss: 1354.657
+In sample validation Loss: 1656.576
+Out of sample validation Loss: 1655.759
+
+Epoch 7
+Training Loss: 1349.097
+In sample validation Loss: 1647.773
+Out of sample validation Loss: 1650.146
+
+Epoch 8
+Training Loss: 1343.924
+In sample validation Loss: 1645.274
+Out of sample validation Loss: 1649.650
+
+Epoch 9
+Training Loss: 1338.317
+In sample validation Loss: 1640.561
+Out of sample validation Loss: 1647.360
+
+Epoch 10
+Training Loss: 1333.420
+In sample validation Loss: 1640.875
+Out of sample validation Loss: 1650.425
+
+Epoch 11
+Training Loss: 1327.618
+In sample validation Loss: 1631.511
+Out of sample validation Loss: 1644.267
+
+Epoch 12
+Training Loss: 1321.215
+In sample validation Loss: 1627.136
+Out of sample validation Loss: 1642.600
+
+Epoch 13
+Training Loss: 1313.627
+In sample validation Loss: 1625.738
+Out of sample validation Loss: 1644.114
+
+Epoch 14
+Training Loss: 1308.271
+In sample validation Loss: 1624.851
+Out of sample validation Loss: 1646.759
+
+Epoch 15
+Training Loss: 1300.748
+In sample validation Loss: 1621.764
+Out of sample validation Loss: 1647.722
+
+Epoch 16
+Training Loss: 1293.993
+In sample validation Loss: 1606.698
+Out of sample validation Loss: 1639.198
+
+Epoch 17
+Training Loss: 1286.648
+In sample validation Loss: 1605.985
+Out of sample validation Loss: 1649.070
+
+Epoch 18
+Training Loss: 1280.992
+In sample validation Loss: 1595.811
+Out of sample validation Loss: 1639.611
+
+Epoch 19
+Training Loss: 1273.545
+In sample validation Loss: 1594.679
+Out of sample validation Loss: 1645.534
+
+Epoch 20
+Training Loss: 1267.828
+In sample validation Loss: 1594.407
+Out of sample validation Loss: 1650.195
+
+Epoch 21
+Training Loss: 1262.742
+In sample validation Loss: 1596.258
+Out of sample validation Loss: 1653.440
+
+Epoch 22
+Training Loss: 1258.106
+In sample validation Loss: 1579.621
+Out of sample validation Loss: 1644.310
+
+Epoch 23
+Training Loss: 1252.466
+In sample validation Loss: 1575.864
+Out of sample validation Loss: 1635.311
+
+Epoch 24
+Training Loss: 1246.817
+In sample validation Loss: 1578.031
+Out of sample validation Loss: 1651.516
+
+Epoch 25
+Training Loss: 1242.889
+In sample validation Loss: 1571.479
+Out of sample validation Loss: 1638.840
+
+Epoch 26
+Training Loss: 1240.139
+In sample validation Loss: 1566.468
+Out of sample validation Loss: 1638.112
+
+Epoch 27
+Training Loss: 1234.964
+In sample validation Loss: 1553.544
+Out of sample validation Loss: 1631.960
+
+Epoch 28
+Training Loss: 1231.567
+In sample validation Loss: 1558.998
+Out of sample validation Loss: 1635.537
+
+Epoch 29
+Training Loss: 1229.270
+In sample validation Loss: 1558.877
+Out of sample validation Loss: 1639.742
+
+Epoch 30
+Training Loss: 1224.823
+In sample validation Loss: 1560.549
+Out of sample validation Loss: 1648.283
+
+Epoch 31
+Training Loss: 1221.098
+In sample validation Loss: 1550.093
+Out of sample validation Loss: 1637.536
+
+Epoch 32
+Training Loss: 1218.779
+In sample validation Loss: 1558.051
+Out of sample validation Loss: 1636.936
+
+Epoch 33
+Training Loss: 1215.459
+In sample validation Loss: 1552.877
+Out of sample validation Loss: 1634.759
+
+Epoch 34
+Training Loss: 1213.723
+In sample validation Loss: 1551.902
+Out of sample validation Loss: 1639.998
+
+Epoch 35
+Training Loss: 1209.212
+In sample validation Loss: 1538.559
+Out of sample validation Loss: 1628.706
+
+Epoch 36
+Training Loss: 1206.519
+In sample validation Loss: 1540.421
+Out of sample validation Loss: 1637.494
+
+Epoch 37
+Training Loss: 1203.584
+In sample validation Loss: 1543.591
+Out of sample validation Loss: 1635.650
+
+Epoch 38
+Training Loss: 1201.242
+In sample validation Loss: 1538.762
+Out of sample validation Loss: 1637.882
+
+Epoch 39
+Training Loss: 1196.963
+In sample validation Loss: 1539.775
+Out of sample validation Loss: 1640.972
+
+Epoch 40
+Training Loss: 1195.438
+In sample validation Loss: 1538.526
+Out of sample validation Loss: 1634.431
+
+Epoch 41
+Training Loss: 1192.735
+In sample validation Loss: 1530.903
+Out of sample validation Loss: 1635.733
+
+Epoch 42
+Training Loss: 1190.683
+In sample validation Loss: 1540.352
+Out of sample validation Loss: 1645.358
+
+Epoch 43
+Training Loss: 1187.893
+In sample validation Loss: 1531.803
+Out of sample validation Loss: 1642.658
+
+Epoch 44
+Training Loss: 1185.408
+In sample validation Loss: 1531.941
+Out of sample validation Loss: 1636.049
+
+Epoch 45
+Training Loss: 1181.485
+In sample validation Loss: 1520.653
+Out of sample validation Loss: 1631.991
+
+Epoch 46
+Training Loss: 1178.547
+In sample validation Loss: 1527.956
+Out of sample validation Loss: 1646.396
+
+Epoch 47
+Training Loss: 1176.694
+In sample validation Loss: 1523.941
+Out of sample validation Loss: 1633.722
+
+Epoch 48
+Training Loss: 1172.754
+In sample validation Loss: 1530.818
+Out of sample validation Loss: 1630.841
+
+Epoch 49
+Training Loss: 1172.494
+In sample validation Loss: 1521.879
+Out of sample validation Loss: 1638.421
+
+Epoch 50
+Training Loss: 1168.911
+In sample validation Loss: 1519.273
+Out of sample validation Loss: 1643.748
+
+Epoch 51
+Training Loss: 1165.138
+In sample validation Loss: 1523.926
+Out of sample validation Loss: 1651.098
+
+Epoch 52
+Training Loss: 1163.599
+In sample validation Loss: 1516.327
+Out of sample validation Loss: 1640.665
+
+Epoch 53
+Training Loss: 1161.979
+In sample validation Loss: 1520.913
+Out of sample validation Loss: 1642.974
+
+Epoch 54
+Training Loss: 1158.208
+In sample validation Loss: 1510.116
+Out of sample validation Loss: 1639.045
+
+Epoch 55
+Training Loss: 1156.957
+In sample validation Loss: 1511.011
+Out of sample validation Loss: 1639.648
+
+Epoch 56
+Training Loss: 1153.764
+In sample validation Loss: 1506.242
+Out of sample validation Loss: 1640.061
+
+Epoch 57
+Training Loss: 1150.643
+In sample validation Loss: 1512.635
+Out of sample validation Loss: 1654.064
+
+Epoch 58
+Training Loss: 1149.943
+In sample validation Loss: 1507.862
+Out of sample validation Loss: 1648.885
+
+Epoch 59
+Training Loss: 1145.864
+In sample validation Loss: 1505.992
+Out of sample validation Loss: 1642.840
+
+Epoch 60
+Training Loss: 1142.765
+In sample validation Loss: 1523.435
+Out of sample validation Loss: 1671.787
+
+Epoch 61
+Training Loss: 1140.792
+In sample validation Loss: 1513.257
+Out of sample validation Loss: 1663.504
+
+Epoch 62
+Training Loss: 1138.402
+In sample validation Loss: 1497.161
+Out of sample validation Loss: 1639.073
+
+Epoch 63
+Training Loss: 1136.373
+In sample validation Loss: 1498.628
+Out of sample validation Loss: 1636.589
+
+Epoch 64
+Training Loss: 1133.748
+In sample validation Loss: 1502.476
+Out of sample validation Loss: 1645.891
+
+Epoch 65
+Training Loss: 1131.188
+In sample validation Loss: 1495.644
+Out of sample validation Loss: 1634.499
+
+Epoch 66
+Training Loss: 1128.179
+In sample validation Loss: 1492.321
+Out of sample validation Loss: 1636.989
+
+Epoch 67
+Training Loss: 1128.003
+In sample validation Loss: 1496.977
+Out of sample validation Loss: 1651.014
+
+Epoch 68
+Training Loss: 1123.792
+In sample validation Loss: 1494.034
+Out of sample validation Loss: 1645.332
+
+Epoch 69
+Training Loss: 1120.351
+In sample validation Loss: 1492.634
+Out of sample validation Loss: 1638.452
+
+Epoch 70
+Training Loss: 1118.469
+In sample validation Loss: 1490.911
+Out of sample validation Loss: 1652.452
+
+Epoch 71
+Training Loss: 1116.945
+In sample validation Loss: 1488.047
+Out of sample validation Loss: 1644.904
+
+Epoch 72
+Training Loss: 1114.083
+In sample validation Loss: 1492.623
+Out of sample validation Loss: 1637.091
+
+Epoch 73
+Training Loss: 1111.724
+In sample validation Loss: 1492.469
+Out of sample validation Loss: 1661.388
+
+Epoch 74
+Training Loss: 1109.045
+In sample validation Loss: 1478.873
+Out of sample validation Loss: 1636.114
+
+Epoch 75
+Training Loss: 1107.366
+In sample validation Loss: 1478.800
+Out of sample validation Loss: 1638.287
+
+Epoch 76
+Training Loss: 1105.895
+In sample validation Loss: 1483.533
+Out of sample validation Loss: 1647.428
+
+Epoch 77
+Training Loss: 1103.091
+In sample validation Loss: 1478.047
+Out of sample validation Loss: 1640.603
+
+Epoch 78
+Training Loss: 1101.059
+In sample validation Loss: 1477.475
+Out of sample validation Loss: 1635.890
+
+Epoch 79
+Training Loss: 1099.638
+In sample validation Loss: 1480.390
+Out of sample validation Loss: 1638.123
+
+Epoch 80
+Training Loss: 1097.778
+In sample validation Loss: 1475.141
+Out of sample validation Loss: 1639.344
+
+Epoch 81
+Training Loss: 1094.682
+In sample validation Loss: 1470.537
+Out of sample validation Loss: 1642.410
+
+Epoch 82
+Training Loss: 1092.160
+In sample validation Loss: 1483.405
+Out of sample validation Loss: 1663.028
+
+Epoch 83
+Training Loss: 1090.202
+In sample validation Loss: 1473.766
+Out of sample validation Loss: 1642.058
+
+Epoch 84
+Training Loss: 1089.304
+In sample validation Loss: 1476.209
+Out of sample validation Loss: 1659.219
+
+Epoch 85
+Training Loss: 1086.023
+In sample validation Loss: 1473.721
+Out of sample validation Loss: 1646.539
+
+Epoch 86
+Training Loss: 1085.182
+In sample validation Loss: 1470.433
+Out of sample validation Loss: 1643.830
+
+Epoch 87
+Training Loss: 1082.281
+In sample validation Loss: 1460.940
+Out of sample validation Loss: 1645.619
+
+Epoch 88
+Training Loss: 1081.439
+In sample validation Loss: 1470.526
+Out of sample validation Loss: 1650.627
+
+Epoch 89
+Training Loss: 1078.935
+In sample validation Loss: 1465.108
+Out of sample validation Loss: 1652.467
+
+Epoch 90
+Training Loss: 1076.646
+In sample validation Loss: 1463.314
+Out of sample validation Loss: 1647.939
+
+Epoch 91
+Training Loss: 1075.437
+In sample validation Loss: 1464.249
+Out of sample validation Loss: 1644.668
+
+Epoch 92
+Training Loss: 1073.967
+In sample validation Loss: 1469.355
+Out of sample validation Loss: 1646.167
+
+Epoch 93
+Training Loss: 1070.938
+In sample validation Loss: 1480.042
+Out of sample validation Loss: 1662.930
+
+Epoch 94
+Training Loss: 1069.412
+In sample validation Loss: 1460.726
+Out of sample validation Loss: 1654.886
+
+Epoch 95
+Training Loss: 1068.523
+In sample validation Loss: 1456.409
+Out of sample validation Loss: 1640.543
+
+Epoch 96
+Training Loss: 1063.824
+In sample validation Loss: 1460.661
+Out of sample validation Loss: 1654.892
+
+Epoch 97
+Training Loss: 1064.057
+In sample validation Loss: 1461.483
+Out of sample validation Loss: 1656.392
+
+Epoch 98
+Training Loss: 1062.954
+In sample validation Loss: 1453.302
+Out of sample validation Loss: 1650.790
+
+Epoch 99
+Training Loss: 1059.912
+In sample validation Loss: 1456.849
+Out of sample validation Loss: 1650.045
+
+Best epoch: 35
+Best loss: 1628.7059535582928
+

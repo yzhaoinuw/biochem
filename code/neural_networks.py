@@ -23,6 +23,7 @@ class MLP(nn.Module):
         logits = self.linear_relu_stack(x)
         return logits
 
+
 class DMLP(nn.Module):
     def __init__(self, input_size, hidden_layer1, hidden_layer2, output_size=1):
         super(DMLP, self).__init__()

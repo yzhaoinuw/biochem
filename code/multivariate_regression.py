@@ -67,22 +67,22 @@ for broad_id, smiles in broad2smiles.items():
     row_indices = row_indices[:l]
     test_inds, valid_inds, train_inds = (
         row_indices[: round(l * TEST_SIZE)],
-        row_indices[round(l * TEST_SIZE): round(l * (TEST_SIZE+VALID_SIZE))],
-        row_indices[round(l * (TEST_SIZE+VALID_SIZE)) :],
+        row_indices[round(l * TEST_SIZE) : round(l * (TEST_SIZE + VALID_SIZE))],
+        row_indices[round(l * (TEST_SIZE + VALID_SIZE)) :],
     )
 
-    if np.random.uniform() > TEST_SIZE+VALID_SIZE:
+    if np.random.uniform() > TEST_SIZE + VALID_SIZE:
         # cell_area = features[train_inds, 0]
         # cytoplasm_area = features[train_inds, 596]
         # nuclei_area = features[train_inds, 1178]
         y_train.extend(features[train_inds])
         X_train.extend([embedding for i in range(len(train_inds))])
-    
-    #nuclei_area = features[valid_inds, 1178]
+
+    # nuclei_area = features[valid_inds, 1178]
     y_valid.extend(features[valid_inds])
     X_valid.extend(embedding for i in range(len(valid_inds)))
-    
-    #nuclei_area = features[test_inds, 1178]
+
+    # nuclei_area = features[test_inds, 1178]
     y_test.extend(features[test_inds])
     X_test.extend(embedding for i in range(len(test_inds)))
 
@@ -112,10 +112,12 @@ train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
 valid_loader = DataLoader(valid_set, batch_size=64, shuffle=True)
 
 # Initialize the MLP
-mlp = DMLP(input_size=512, hidden_layer1=1024, hidden_layer2=256, output_size=1783).to(device)
+mlp = DMLP(input_size=512, hidden_layer1=1024, hidden_layer2=256, output_size=1783).to(
+    device
+)
 
 # Define the loss function and optimizer
-loss_function = nn.MSELoss(reduction='none')
+loss_function = nn.MSELoss(reduction="none")
 optimizer = torch.optim.Adam(mlp.parameters(), lr=1e-4)
 prev_loss = 0.0
 stale = 0.0
@@ -153,13 +155,13 @@ for epoch in range(EPOCHS):
         # Compute loss
         loss = loss_function(outputs, targets)
         loss = torch.sum(loss)
-        
+
         # Perform backward pass
         loss.backward()
 
         # Perform optimization
         optimizer.step()
-        
+
         train_loss += loss.item()
 
     train_loss /= len(train_set)

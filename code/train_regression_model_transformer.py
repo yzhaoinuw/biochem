@@ -69,21 +69,21 @@ for broad_id, smiles in broad2smiles.items():
     row_indices = row_indices[:l]
     test_inds, valid_inds, train_inds = (
         row_indices[: round(l * TEST_SIZE)],
-        row_indices[round(l * TEST_SIZE): round(l * (TEST_SIZE+VALID_SIZE))],
-        row_indices[round(l * (TEST_SIZE+VALID_SIZE)) :],
+        row_indices[round(l * TEST_SIZE) : round(l * (TEST_SIZE + VALID_SIZE))],
+        row_indices[round(l * (TEST_SIZE + VALID_SIZE)) :],
     )
 
-    if np.random.uniform() > TEST_SIZE+VALID_SIZE:
+    if np.random.uniform() > TEST_SIZE + VALID_SIZE:
         # cell_area = features[train_inds, 0]
-            # cytoplasm_area = features[train_inds, 596]
+        # cytoplasm_area = features[train_inds, 596]
         nuclei_area = features[train_inds, 1178]
         y_train.extend(nuclei_area)
         X_train.extend([embedding for i in range(len(train_inds))])
-    
+
     nuclei_area = features[valid_inds, 1178]
     y_valid.extend(nuclei_area)
     X_valid.extend(embedding for i in range(len(valid_inds)))
-    
+
     nuclei_area = features[test_inds, 1178]
     y_test.extend(nuclei_area)
     X_test.extend(embedding for i in range(len(test_inds)))
@@ -157,7 +157,7 @@ for epoch in range(EPOCHS):
 
         # Perform optimization
         optimizer.step()
-        
+
         train_loss += torch.sqrt(loss).item() * len(data[0])
 
     train_loss /= len(train_set)
@@ -211,13 +211,13 @@ y_test_pred = torch.squeeze(y_test_pred, 1)
 y_test_sorted, indices = torch.sort(y_test)
 rankings = []
 for i, y in enumerate(y_test):
-    ranking_cover = calculate_rank(y_test_sorted, y, y_test_pred[i]) 
+    ranking_cover = calculate_rank(y_test_sorted, y, y_test_pred[i])
     rankings.append(ranking_cover)
-    
+
 #%%
 rankings = np.array(rankings)
 #%%
-plt.hist(rankings, bins=20, edgecolor='black')
-plt.xticks(np.arange(0, 1, step=0.05), rotation = 45)
-plt.grid(axis='y')
-plt.annotate(f'Total Count: {len(y_test)}', xy=(0.7, 0.9), xycoords='axes fraction')
+plt.hist(rankings, bins=20, edgecolor="black")
+plt.xticks(np.arange(0, 1, step=0.05), rotation=45)
+plt.grid(axis="y")
+plt.annotate(f"Total Count: {len(y_test)}", xy=(0.7, 0.9), xycoords="axes fraction")

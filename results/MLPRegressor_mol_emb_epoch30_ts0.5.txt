@@ -1,4 +1,0 @@
-Epoch 29
-Training Loss: 44.473
-Test Loss: 44.426
-

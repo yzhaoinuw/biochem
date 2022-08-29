@@ -61,25 +61,25 @@ for broad_id, mol_vec in broad2vec.items():
     row_indices = row_indices[:l]
     test_inds, valid_inds, train_inds = (
         row_indices[: round(l * TEST_SIZE)],
-        row_indices[round(l * TEST_SIZE): round(l * (TEST_SIZE+VALID_SIZE))],
-        row_indices[round(l * (TEST_SIZE+VALID_SIZE)) :],
+        row_indices[round(l * TEST_SIZE) : round(l * (TEST_SIZE + VALID_SIZE))],
+        row_indices[round(l * (TEST_SIZE + VALID_SIZE)) :],
     )
 
-    if np.random.uniform() > TEST_SIZE+VALID_SIZE:
+    if np.random.uniform() > TEST_SIZE + VALID_SIZE:
         # cell_area = features[train_inds, 0]
-            # cytoplasm_area = features[train_inds, 596]
+        # cytoplasm_area = features[train_inds, 596]
         nuclei_area = features[train_inds, 1178]
         y_train.extend(nuclei_area)
         X_train.extend([mol_vec for i in range(len(train_inds))])
-    
+
     nuclei_area = features[valid_inds, 1178]
     y_valid.extend(nuclei_area)
     X_valid.extend(mol_vec for i in range(len(valid_inds)))
-    
+
     nuclei_area = features[test_inds, 1178]
     y_test.extend(nuclei_area)
     X_test.extend(mol_vec for i in range(len(test_inds)))
-            
+
 #%%
 X_train, X_valid, X_test = np.array(X_train), np.array(X_valid), np.array(X_test)
 y_train, y_valid, y_test = np.array(y_train), np.array(y_valid), np.array(y_test)
@@ -148,7 +148,7 @@ for epoch in range(EPOCHS):
 
         # Perform optimization
         optimizer.step()
-        
+
         train_loss += torch.sqrt(loss).item() * len(data[0])
 
     train_loss /= len(train_set)
