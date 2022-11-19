@@ -29,7 +29,7 @@ features = np.load(DATA_PATH + features_file)
 
 #%%
 
-MIN_SAMPLE_COUNT = 1
+MIN_SAMPLE_COUNT = 4
 MAX_SAMPLE_COUNT = 8
 VALID_SIZE = 0.2
 TEST_SIZE = 0.2

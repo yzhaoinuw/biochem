@@ -32,7 +32,7 @@ with open(DATA_PATH + feature_name_file, "r") as infile1:
 
 feature_names = np.array(feature_names)
 features = np.load(DATA_PATH + features_file)
-
+features_standardized = stats.zscore(features, axis=0, ddof=1)
 #%%
 # rows = broad2features['BRD-A00100033-001-04-8']
 # features[rows]

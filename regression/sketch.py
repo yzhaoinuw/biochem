@@ -17,8 +17,8 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 
-from dataset import Dataset
-from neural_networks import MLP, DMLP
+from biochem.dataset import Dataset
+from biochem.neural_networks import MLP, DMLP
 
 DATA_PATH = "../data/"
 MODEL_PATH = "../model/"
@@ -44,8 +44,8 @@ with open(DATA_PATH + data_split_file, "r") as infile1:
     data_split = json.load(infile1)
 
 # randomvec
-with open(DATA_PATH + randvec_file, "r") as infile1:
-    embeddings = json.load(infile1)
+# with open(DATA_PATH + randvec_file, "r") as infile1:
+#    embeddings = json.load(infile1)
 
 # mol2vec
 # with open(DATA_PATH + broad2vec_file, "r") as infile1:
@@ -56,7 +56,7 @@ with open(DATA_PATH + randvec_file, "r") as infile1:
 #    embeddings = json.load(infile1)
 
 # transformers
-# embeddings = np.load(MODEL_PATH + embeddings_file)
+embeddings = np.load(MODEL_PATH + embeddings_file)
 
 #%%
 
@@ -69,33 +69,33 @@ y_valid_os = []
 
 for broad_id, row_ind in data_split["train"]:
     smiles = broad2smiles[broad_id]
-    # embedding = embeddings.get(smiles, None) # transformer embeddings
-    embedding = embeddings.get(broad_id, None)
+    embedding = embeddings.get(smiles, None)  # transformer embeddings
+    # embedding = embeddings.get(broad_id, None)
     if embedding is None:
         continue
-    # embedding = np.mean(embedding, axis=0) # transformer embeddings
+    embedding = np.mean(embedding, axis=0)  # transformer embeddings
     # embedding = np.array(list(embedding)).astype(float) # fingerprints
     X_train.append(embedding)
     y_train.append(features[row_ind])
 
 for broad_id, row_ind in data_split["validation_is"]:
     smiles = broad2smiles[broad_id]
-    # embedding = embeddings.get(smiles, None)
-    embedding = embeddings.get(broad_id, None)
+    embedding = embeddings.get(smiles, None)
+    # embedding = embeddings.get(broad_id, None)
     if embedding is None:
         continue
-    # embedding = np.mean(embedding, axis=0)
+    embedding = np.mean(embedding, axis=0)
     # embedding = np.array(list(embedding)).astype(float)
     X_valid_is.append(embedding)
     y_valid_is.append(features[row_ind])
 
 for broad_id, row_ind in data_split["validation_os"]:
     smiles = broad2smiles[broad_id]
-    # embedding = embeddings.get(smiles, None)
-    embedding = embeddings.get(broad_id, None)
+    embedding = embeddings.get(smiles, None)
+    # embedding = embeddings.get(broad_id, None)
     if embedding is None:
         continue
-    # embedding = np.mean(embedding, axis=0)
+    embedding = np.mean(embedding, axis=0)
     # embedding = np.array(list(embedding)).astype(float)
     X_valid_os.append(embedding)
     y_valid_os.append(features[row_ind])
@@ -111,7 +111,7 @@ scaler_filename = f"standard_scaler_min_sample_count{MIN_SAMPLE_COUNT}.save"
 scaler = StandardScaler()
 y_train = scaler.fit_transform(y_train)
 y_valid_is, y_valid_os = scaler.transform(y_valid_is), scaler.transform(y_valid_os)
-joblib.dump(scaler, MODEL_PATH + scaler_filename)
+# joblib.dump(scaler, MODEL_PATH + scaler_filename)
 
 #%%
 use_cuda = torch.cuda.is_available()
@@ -129,21 +129,23 @@ y_valid_is, y_valid_os = (
 )
 
 train_set = Dataset(X_train, y_train)
-valid_set_is, valid_set_os = Dataset(X_valid_is, y_valid_is), Dataset(
-    X_valid_os, y_valid_os
+valid_set_is, valid_set_os = (
+    Dataset(X_valid_is, y_valid_is),
+    Dataset(X_valid_os, y_valid_os),
 )
 train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
-valid_loader_is, valid_loader_os = DataLoader(
-    valid_set_is, batch_size=32, shuffle=True
-), DataLoader(valid_set_os, batch_size=32, shuffle=True)
+valid_loader_is, valid_loader_os = (
+    DataLoader(valid_set_is, batch_size=32, shuffle=True),
+    DataLoader(valid_set_os, batch_size=32, shuffle=True),
+)
 
 # Initialize the MLP
-mlp = DMLP(input_size=2048, hidden_layer1=1024, hidden_layer2=512, output_size=1783).to(
+mlp = DMLP(input_size=512, hidden_layer1=1024, hidden_layer2=512, output_size=1783).to(
     device
 )
 
-EPOCHS = 100
-SAVE_MODEL = True
+EPOCHS = 50
+SAVE_MODEL = False
 WEIGHT_DECAY = 0.1
 MODEL_NAME = f"DMLPRegressor_randvec_weight_decay{WEIGHT_DECAY}_min_sample_count{MIN_SAMPLE_COUNT}"
 

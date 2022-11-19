@@ -15,9 +15,11 @@ import torch
 from torch import nn
 from torch.utils.data import DataLoader
 
-from dataset import Dataset
-from evaluate import calculate_rank
-from neural_networks import MLP, DMLP
+from biochem.dataset import Dataset
+from biochem.neural_networks import MLP, DMLP
+
+# from evaluate import calculate_rank
+
 
 DATA_PATH = "../data/"
 MODEL_PATH = "../model/"
